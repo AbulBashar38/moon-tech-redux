@@ -3,6 +3,9 @@ import {
   FETCH_ERROR,
   FETCH_START,
   FETCH_SUCCESS,
+  PRODUCT_ADD,
+  PRODUCT_DELETE,
+  PRODUCT_UPDATE,
   REMOVE_FROM_CART,
 } from "../actionType/actionType";
 
@@ -75,6 +78,36 @@ const productReducer = (state = initialState, action) => {
       return {
         ...state,
         products: { ...state.products, isError: true },
+      };
+    case PRODUCT_ADD:
+      return {
+        ...state,
+        products: {
+          ...state.products,
+          product: [...state.products.product, action.payload],
+        },
+      };
+    case PRODUCT_DELETE:
+      const newProduct = state.products.product.filter(
+        (product) => product._id !== action.payload
+      );
+      return {
+        ...state,
+        products: { ...state.products, product: newProduct },
+      };
+    case PRODUCT_UPDATE:
+      const updateProduct = state.products.product.filter(
+        (product) => product._id !== action.payload.id
+      );
+      return {
+        ...state,
+        products: {
+          ...state.products,
+          product: [
+            ...updateProduct,
+            { ...action.payload.product, _id: action.payload.id },
+          ],
+        },
       };
     default:
       return state;
